@@ -1,0 +1,2784 @@
+# BUILD A COMPLETE SIH HACKATHON PROTOTYPE
+
+You are an expert:
+
+* Full-stack software architect
+* Scientific-data engineer
+* Ocean-data visualization engineer
+* Geospatial visualization engineer
+* WebGL / Three.js developer
+* Python developer
+* React/TypeScript developer
+* Data visualization specialist
+* UI/UX designer
+* DevOps engineer
+* Technical mentor
+
+I am a beginner-level college student/team participating in the Smart India Hackathon.
+
+We have selected:
+
+# SIH PROBLEM STATEMENT 26067
+
+## Problem Statement
+
+**Develop a web-based interactive 3D visualization platform that integrates numerical ocean model outputs and in-situ observations.**
+
+Organization:
+
+**Ministry of Earth Sciences (MoES)**
+
+Department:
+
+**Indian National Centre for Ocean Information Services (INCOIS)**
+
+Category:
+
+**Software**
+
+Theme:
+
+**Disaster Management**
+
+---
+
+# 1. MOST IMPORTANT INSTRUCTION
+
+## DO NOT JUST EXPLAIN THE SOLUTION.
+
+You must actually **BUILD A COMPLETE WORKING WEB APPLICATION PROTOTYPE**.
+
+The final result should be something we can run in Replit and demonstrate to SIH judges.
+
+You must create:
+
+* Complete frontend
+* Complete backend
+* Data-processing pipeline
+* Demo datasets
+* 3D visualization
+* Ocean model visualization
+* Argo/Glider observation visualization
+* Time controls
+* Depth controls
+* Variable controls
+* Colorbar controls
+* Current visualization
+* Profile charts
+* Model-vs-observation comparison
+* Analytics
+* Map
+* Data ingestion interface
+* API
+* Documentation
+* Demo mode
+* Sample data
+* README
+* Demo script
+
+Do not stop after generating an architecture.
+
+**Build the application.**
+
+---
+
+# 2. UNDERSTAND THE ACTUAL PROBLEM
+
+The core problem is:
+
+INCOIS generates large volumes of numerical ocean model data.
+
+This data can contain:
+
+* Temperature
+* Salinity
+* Current vectors
+* Chlorophyll
+* Depth
+* Latitude
+* Longitude
+* Time
+
+INCOIS also receives observational data from instruments such as:
+
+* Argo floats
+* Underwater gliders
+* CTDs
+* BGC instruments
+* Moorings
+* ADCP
+* HF radar
+
+These datasets can contain:
+
+* Latitude
+* Longitude
+* Depth
+* Timestamp
+* Temperature
+* Salinity
+* Chlorophyll
+* Current information
+
+The problem is that these datasets are difficult to explore together in one intuitive browser-based 3D environment.
+
+The application we build must solve this.
+
+---
+
+# 3. CORE PRODUCT VISION
+
+The final product should communicate this idea immediately:
+
+> **"A browser-based 3D ocean digital exploration and analysis platform that allows users to visualize numerical ocean model outputs and real-world ocean observations together in one interactive environment."**
+
+The user should be able to:
+
+```text
+Select Ocean Region
+        ↓
+Select Dataset
+        ↓
+Select Variable
+        ↓
+Select Date/Time
+        ↓
+Select Depth
+        ↓
+Explore 3D Ocean
+        ↓
+View Argo / Glider Observations
+        ↓
+Click Observation
+        ↓
+View Profile
+        ↓
+Compare Model vs Observation
+        ↓
+Analyze Ocean Conditions
+```
+
+---
+
+# 4. DO NOT OVER-ENGINEER
+
+This is a **24–48 hour SIH prototype**.
+
+The goal is:
+
+**A convincing working prototype > production-scale infrastructure.**
+
+Do NOT waste time building:
+
+* Kubernetes
+* Microservices
+* Complex cloud infrastructure
+* Enterprise authentication
+* Distributed computing clusters
+* Full OPeNDAP server
+* Complete OGC server infrastructure
+* Huge global datasets
+* Complicated ML models
+* Complex WebGL shaders
+* Blender assets
+
+Build the simplest architecture that convincingly demonstrates the solution.
+
+---
+
+# 5. IMPORTANT: DEMO MODE
+
+The application MUST work even if we don't have access to live INCOIS data.
+
+Create:
+
+# DEMO MODE
+
+The application should come preloaded with realistic sample ocean data.
+
+The user should be able to open the application and immediately see:
+
+* Indian Ocean
+* Temperature field
+* Salinity field
+* Ocean currents
+* Depth layers
+* Time steps
+* Argo floats
+* Glider tracks
+* Observation profiles
+* Model/observation comparison
+
+Do NOT start with an empty screen.
+
+---
+
+# 6. DEMO DATA
+
+Create realistic synthetic/demo datasets.
+
+The demo region should preferably represent the:
+
+# Indian Ocean
+
+especially around the Indian coastline / Arabian Sea / Bay of Bengal.
+
+Generate data containing:
+
+```text
+latitude
+longitude
+depth
+time
+temperature
+salinity
+u_current
+v_current
+chlorophyll
+```
+
+Create several depth levels such as:
+
+```text
+0 m
+10 m
+25 m
+50 m
+100 m
+200 m
+500 m
+1000 m
+```
+
+Create multiple time steps.
+
+For example:
+
+```text
+2026-01-01
+2026-01-02
+2026-01-03
+...
+2026-01-10
+```
+
+The exact values may be synthetic but should be scientifically plausible.
+
+Clearly label synthetic data as:
+
+```text
+DEMO DATA
+```
+
+---
+
+# 7. DATA ARCHITECTURE
+
+Design the application around this pipeline:
+
+```text
+             ┌─────────────────────┐
+             │ Ocean Model Data    │
+             │ NetCDF / Zarr       │
+             └──────────┬──────────┘
+                        │
+                        ▼
+             ┌─────────────────────┐
+             │ Data Processing     │
+             │ Python + xarray     │
+             └──────────┬──────────┘
+                        │
+                        ▼
+             ┌─────────────────────┐
+             │ Processed Data      │
+             │ JSON / optimized    │
+             └──────────┬──────────┘
+                        │
+                        ▼
+┌───────────────┐       │
+│ Argo          │───────┤
+│ Glider        │───────┤
+│ CTD           │───────┤
+│ BGC           │───────┤
+└───────────────┘       │
+                        ▼
+             ┌─────────────────────┐
+             │ FastAPI Backend     │
+             └──────────┬──────────┘
+                        │
+                        ▼
+             ┌─────────────────────┐
+             │ React Frontend      │
+             └──────────┬──────────┘
+                        │
+                        ▼
+             ┌─────────────────────┐
+             │ 3D Visualization    │
+             │ Three.js / WebGL    │
+             └─────────────────────┘
+```
+
+---
+
+# 8. TECHNOLOGY STACK
+
+Use this stack unless Replit compatibility requires a small adjustment.
+
+## Frontend
+
+React
+
+TypeScript
+
+Vite
+
+## UI
+
+Tailwind CSS
+
+## 3D
+
+Three.js
+
+React Three Fiber
+
+Drei if useful
+
+## Backend
+
+Python
+
+FastAPI
+
+## Scientific data
+
+Python
+
+NumPy
+
+pandas
+
+xarray
+
+NetCDF4 / h5netcdf where needed
+
+## Charts
+
+Plotly or Recharts
+
+Prefer Plotly for scientific charts if it integrates cleanly.
+
+## Map
+
+Leaflet / React Leaflet
+
+## Database
+
+SQLite for the prototype
+
+## Data format
+
+NetCDF for scientific-data demonstration
+
+JSON for lightweight frontend responses
+
+## Optional
+
+Zarr for future scalability
+
+Do NOT introduce additional technologies unless necessary.
+
+---
+
+# 9. FRONTEND DESIGN
+
+Create a professional scientific visualization dashboard.
+
+The application should feel like:
+
+**INCOIS scientific visualization platform + modern mission-control interface.**
+
+Do not make it look like a generic SaaS dashboard.
+
+Use:
+
+* Dark/space/ocean-inspired professional UI
+* Clear controls
+* Scientific data panels
+* Large 3D visualization area
+* Charts
+* Colorbars
+* Layer controls
+* Dataset information
+* Status indicators
+
+Avoid excessive animations.
+
+The 3D visualization must be the main focus.
+
+---
+
+# 10. APPLICATION NAVIGATION
+
+Create the following navigation:
+
+```text
+Dashboard
+3D Ocean Explorer
+Observations
+Model vs Observation
+Analytics
+Datasets
+Data Ingestion
+Map
+About
+```
+
+The most important page is:
+
+# 3D Ocean Explorer
+
+---
+
+# 11. DASHBOARD
+
+Create a landing dashboard.
+
+Show:
+
+### Active Dataset
+
+Indian Ocean Demo Model
+
+### Current Variable
+
+Temperature
+
+### Current Depth
+
+50 m
+
+### Current Time
+
+2026-01-05
+
+### Observation Platforms
+
+```text
+Argo: 24
+Gliders: 6
+CTD: 8
+```
+
+### Model Grid
+
+Example:
+
+```text
+120 × 80 × 8
+```
+
+### Available Variables
+
+* Temperature
+* Salinity
+* Current
+* Chlorophyll
+
+### Quick Actions
+
+```text
+[Open 3D Explorer]
+
+[Explore Observations]
+
+[Compare Model vs Observation]
+
+[View Analytics]
+```
+
+---
+
+# 12. MAIN 3D OCEAN EXPLORER
+
+This is the most important feature.
+
+Create a large interactive 3D scene.
+
+The user should see an ocean volume representing the Indian Ocean.
+
+The 3D scene should support:
+
+* Rotate
+* Pan
+* Zoom
+* Reset view
+* Select location
+* Select observation
+* Toggle layers
+
+---
+
+# 13. 3D OCEAN MODEL VISUALIZATION
+
+Represent model data in 3D.
+
+At minimum support:
+
+## Temperature
+
+Use a color scale.
+
+Example:
+
+```text
+Cold
+Blue
+Cyan
+Green
+Yellow
+Orange
+Red
+Hot
+```
+
+## Salinity
+
+Use a separate scientific color scale.
+
+## Chlorophyll
+
+Use another scale.
+
+## Currents
+
+Use:
+
+* Arrows
+* Vectors
+* Particles
+
+For the MVP, prefer simple arrows or animated particles rather than complex streamlines.
+
+---
+
+# 14. DEPTH SLIDER
+
+Create a prominent depth control.
+
+Example:
+
+```text
+Depth
+
+0m ───────●──────────── 1000m
+          50m
+```
+
+The user should be able to change depth.
+
+When depth changes:
+
+```text
+Frontend
+   ↓
+API
+   ↓
+Dataset
+   ↓
+Selected depth
+   ↓
+Visualization updates
+```
+
+The 3D visualization should update accordingly.
+
+---
+
+# 15. TIME SLIDER
+
+Create a time slider.
+
+Example:
+
+```text
+2026-01-01 ─────●──────── 2026-01-10
+                 Jan 5
+```
+
+Controls:
+
+```text
+◀
+Play
+▶
+```
+
+When Play is clicked:
+
+The time should automatically advance.
+
+The visualization should update.
+
+Show:
+
+```text
+Current Time:
+05 Jan 2026 12:00 UTC
+```
+
+---
+
+# 16. VARIABLE SELECTOR
+
+Create:
+
+```text
+Variable
+
+[ Temperature ▼ ]
+```
+
+Options:
+
+```text
+Temperature
+Salinity
+Current Speed
+Current Direction
+Chlorophyll
+```
+
+When a variable changes:
+
+* Visualization changes
+* Colorbar changes
+* Units change
+* Statistics update
+
+Example:
+
+```text
+Temperature
+Unit: °C
+Min: 19.2
+Max: 31.8
+```
+
+---
+
+# 17. COLORBAR CONTROLS
+
+This is a required feature.
+
+Create a control panel:
+
+```text
+Colorbar
+
+Palette:
+[ Ocean Thermal ▼ ]
+
+Minimum:
+[ 15 ]
+
+Maximum:
+[ 35 ]
+
+Scale:
+○ Linear
+○ Log
+
+Opacity:
+──────●────
+```
+
+The colorbar should update dynamically.
+
+Support at least:
+
+* Min
+* Max
+* Palette
+* Opacity
+* Linear/logical scale where appropriate
+
+---
+
+# 18. VERTICAL EXAGGERATION
+
+Add:
+
+```text
+Vertical Exaggeration
+
+1x ─────●──── 10x
+```
+
+Changing this should exaggerate depth visually.
+
+This is useful because ocean depth is much smaller visually compared with geographic width.
+
+---
+
+# 19. DEPTH-SLICE VIEW
+
+Implement a mode:
+
+# Depth Slice
+
+The user chooses a depth and sees the corresponding horizontal field.
+
+Example:
+
+```text
+Temperature @ 100m
+```
+
+The visualization should update.
+
+---
+
+# 20. 3D VOLUMETRIC VIEW
+
+Implement a simplified volumetric representation.
+
+It does NOT need to be a scientifically perfect volume renderer for the MVP.
+
+A practical approach is acceptable:
+
+* stacked semi-transparent layers
+* 3D grid cells
+* colored slices
+* point cloud
+* textured planes
+
+The objective is to demonstrate:
+
+> Ocean variables vary across latitude, longitude and depth.
+
+---
+
+# 21. ISOSURFACE
+
+The problem statement asks for isosurface extraction.
+
+Implement a simplified MVP version if practical.
+
+Example:
+
+```text
+Visualization Mode
+
+○ Depth Slice
+○ Volume
+● Isosurface
+```
+
+For example:
+
+```text
+Temperature = 28°C
+```
+
+Display a surface representing regions where the value is approximately 28°C.
+
+If full marching-cubes implementation is too risky, implement a simplified threshold surface or clearly mark this as an MVP approximation.
+
+Do NOT break the application trying to implement a perfect scientific isosurface renderer.
+
+---
+
+# 22. CURRENT VISUALIZATION
+
+Display ocean currents.
+
+The model contains:
+
+```text
+u_current
+v_current
+```
+
+Calculate:
+
+```text
+speed = sqrt(u² + v²)
+```
+
+Display:
+
+* Arrow direction
+* Arrow length based on speed
+* Optional animated particles
+
+Example:
+
+```text
+→ → ↗ ↗ ↑
+→ ↗ ↑ ↑
+↘ → ↗
+```
+
+The user should be able to toggle:
+
+```text
+☑ Show Currents
+```
+
+---
+
+# 23. OBSERVATION DATA
+
+Create an observation layer.
+
+Support:
+
+### Argo
+
+### Glider
+
+### CTD
+
+### BGC
+
+At minimum the prototype must demonstrate:
+
+* Argo
+* Glider
+
+Display them as geospatial markers.
+
+Example:
+
+```text
+● Argo-2901234
+
+◆ Glider-07
+```
+
+Use different marker shapes/colors.
+
+---
+
+# 24. ARGO FLOAT
+
+Clicking an Argo float should open a detail panel.
+
+Example:
+
+```text
+ARGO FLOAT
+
+ID:
+2901234
+
+Latitude:
+15.23°
+
+Longitude:
+68.42°
+
+Last Update:
+2026-01-05
+
+Depth:
+1000m
+
+Status:
+Active
+```
+
+Show a profile chart:
+
+```text
+Temperature vs Depth
+
+0m     28°C
+100m   25°C
+200m   22°C
+500m   17°C
+1000m  8°C
+```
+
+---
+
+# 25. GLIDER
+
+Clicking a glider should show:
+
+```text
+GLIDER
+
+ID:
+GLIDER-07
+
+Mission:
+Arabian Sea Survey
+
+Position:
+...
+
+Timestamp:
+...
+
+Depth:
+...
+
+Status:
+Active
+```
+
+Show its track on the map/3D scene.
+
+---
+
+# 26. OBSERVATION PROFILE
+
+When a user clicks an instrument:
+
+Display a profile panel.
+
+The user should be able to select:
+
+```text
+Profile Variable:
+
+Temperature
+Salinity
+Chlorophyll
+```
+
+Chart:
+
+```text
+Depth
+│
+│ ●
+│  ●
+│   ●
+│    ●
+│      ●
+└────────────── Variable
+```
+
+Use Plotly or another suitable charting library.
+
+---
+
+# 27. MODEL VS OBSERVATION COMPARISON
+
+This is one of the most important features.
+
+Create a dedicated page:
+
+# Model vs Observation
+
+The user selects an observation.
+
+Then retrieve the corresponding model value.
+
+Example:
+
+```text
+Observation
+
+Temperature:
+27.8°C
+
+Model
+
+Temperature:
+27.1°C
+
+Difference:
++0.7°C
+```
+
+Show:
+
+```text
+Model:        27.1°C
+Observation:  27.8°C
+Error:        0.7°C
+Bias:         -0.7°C
+```
+
+---
+
+# 28. MATCHING MODEL AND OBSERVATION
+
+Implement a simple matching algorithm.
+
+Given:
+
+```text
+Observation:
+lat
+lon
+depth
+time
+```
+
+find the nearest model point based on:
+
+* latitude
+* longitude
+* depth
+* time
+
+For MVP:
+
+Use nearest-neighbor matching.
+
+Do not implement complicated interpolation initially.
+
+Later, optionally support interpolation.
+
+---
+
+# 29. COMPARISON METRICS
+
+Implement:
+
+### Difference
+
+```text
+model - observation
+```
+
+### Absolute Error
+
+```text
+abs(model - observation)
+```
+
+### Mean Absolute Error
+
+```text
+MAE
+```
+
+### Bias
+
+```text
+mean(model - observation)
+```
+
+RMSE can be implemented if practical.
+
+For the MVP, prioritize:
+
+* Difference
+* Absolute error
+* MAE
+* Bias
+
+---
+
+# 30. COMPARISON CHART
+
+Create a chart:
+
+```text
+Temperature
+
+Model ─────────╮
+               ╰──────╮
+Observation ─────╮    ╰────
+                  ╰───────
+```
+
+Allow the user to compare the model profile and observed profile.
+
+Show:
+
+```text
+Model
+Observation
+Difference
+```
+
+---
+
+# 31. MAP VIEW
+
+Create a 2D geographic map.
+
+Use Leaflet.
+
+Show:
+
+* Ocean region
+* Argo floats
+* Gliders
+* CTD stations
+* Model domain
+* Selected point
+
+The map should support:
+
+* Zoom
+* Pan
+* Marker selection
+
+---
+
+# 32. DATA INGESTION
+
+Create:
+
+# Data Ingestion
+
+The user should be able to upload:
+
+### NetCDF
+
+### CSV
+
+### TXT
+
+At minimum implement:
+
+```text
+Upload File
+      ↓
+Detect Format
+      ↓
+Parse
+      ↓
+Validate
+      ↓
+Inspect Metadata
+      ↓
+Register Dataset
+```
+
+---
+
+# 33. NETCDF PROCESSING
+
+Use:
+
+# xarray
+
+Implement a Python service that can:
+
+1. Open NetCDF
+2. Inspect dimensions
+3. Identify variables
+4. Identify coordinates
+5. Extract metadata
+6. Extract selected data
+7. Return processed information to the backend
+
+Example:
+
+```python
+dataset = xarray.open_dataset(file)
+
+print(dataset.dims)
+print(dataset.variables)
+```
+
+Do not load huge datasets completely into memory.
+
+Use lazy loading where practical.
+
+---
+
+# 34. DATASET INSPECTOR
+
+After uploading a NetCDF file, display:
+
+```text
+Dataset Name
+
+Dimensions
+
+latitude:
+120
+
+longitude:
+160
+
+depth:
+20
+
+time:
+24
+```
+
+Variables:
+
+```text
+temperature
+salinity
+u_current
+v_current
+chlorophyll
+```
+
+Metadata:
+
+```text
+Units
+Coordinates
+Time range
+Depth range
+Spatial extent
+```
+
+---
+
+# 35. CSV/TEXT INGESTION
+
+Support observation data such as:
+
+```text
+latitude
+longitude
+depth
+time
+temperature
+salinity
+chlorophyll
+platform_id
+platform_type
+```
+
+Detect the columns.
+
+Display a preview table.
+
+Allow the user to confirm the mapping.
+
+Example:
+
+```text
+Latitude → latitude
+Longitude → longitude
+Depth → depth
+Temperature → temperature
+```
+
+---
+
+# 36. MODULAR DATA INGESTION
+
+Design:
+
+```text
+DataSource
+│
+├── NetCDFSource
+├── CSVSource
+├── TextSource
+├── ArgoSource
+└── GliderSource
+```
+
+The goal is that adding a new source later should not require rewriting the whole application.
+
+---
+
+# 37. DATASET MANAGEMENT
+
+Create a dataset page.
+
+Show:
+
+```text
+Dataset
+Type
+Source
+Variables
+Time Range
+Depth Range
+Spatial Range
+Status
+```
+
+Example:
+
+```text
+Indian Ocean Demo Model
+NETCDF
+Demo
+Temperature
+Salinity
+Currents
+Chlorophyll
+READY
+```
+
+---
+
+# 38. BACKEND API
+
+Use FastAPI.
+
+Create:
+
+```text
+GET /api/datasets
+
+GET /api/datasets/{id}
+
+GET /api/variables
+
+GET /api/times
+
+GET /api/depths
+
+GET /api/ocean/data
+
+GET /api/ocean/slice
+
+GET /api/ocean/current
+
+GET /api/observations
+
+GET /api/observations/{id}
+
+GET /api/observations/{id}/profile
+
+GET /api/comparison
+
+POST /api/datasets/upload
+
+GET /api/map
+
+GET /api/statistics
+```
+
+---
+
+# 39. API EXAMPLE
+
+For:
+
+```text
+GET /api/ocean/slice
+```
+
+support parameters such as:
+
+```text
+variable=temperature
+depth=50
+time=2026-01-05
+```
+
+Return:
+
+```json
+{
+  "variable": "temperature",
+  "unit": "degC",
+  "depth": 50,
+  "time": "2026-01-05",
+  "latitude": [],
+  "longitude": [],
+  "values": []
+}
+```
+
+Design the response for efficient frontend visualization.
+
+---
+
+# 40. FRONTEND STRUCTURE
+
+Create:
+
+```text
+frontend/
+├── src/
+│
+├── components/
+│   ├── Ocean3D/
+│   ├── Controls/
+│   ├── Colorbar/
+│   ├── DepthSlider/
+│   ├── TimeSlider/
+│   ├── VariableSelector/
+│   ├── ObservationMarkers/
+│   ├── ProfileChart/
+│   ├── ComparisonChart/
+│   ├── CurrentLayer/
+│   ├── DatasetPanel/
+│   └── Map/
+│
+├── pages/
+│   ├── Dashboard
+│   ├── OceanExplorer
+│   ├── Observations
+│   ├── Comparison
+│   ├── Analytics
+│   ├── Datasets
+│   ├── Ingestion
+│   └── About
+│
+├── services/
+├── hooks/
+├── types/
+└── App.tsx
+```
+
+---
+
+# 41. MAIN 3D PAGE LAYOUT
+
+Create approximately:
+
+```text
+┌──────────────────────────────────────────────────────────┐
+│ INCOIS OCEAN 3D EXPLORER                                 │
+├──────────────┬───────────────────────────────┬───────────┤
+│ CONTROLS     │                               │ INFO      │
+│              │                               │           │
+│ Dataset      │                               │ Variable  │
+│ Variable     │        3D OCEAN VIEW          │ Value     │
+│ Depth        │                               │           │
+│ Time         │                               │ Units     │
+│ Colorbar     │                               │ Stats     │
+│ Opacity      │                               │           │
+│ Currents     │                               │           │
+│ Observations │                               │           │
+│              │                               │           │
+├──────────────┴───────────────────────────────┴───────────┤
+│ TIME CONTROL                                              │
+│ ◀   ▶   ─────────────●────────────────────────────       │
+└──────────────────────────────────────────────────────────┘
+```
+
+---
+
+# 42. 3D VISUALIZATION TECHNICAL IMPLEMENTATION
+
+Use Three.js / React Three Fiber.
+
+Convert:
+
+```text
+latitude
+longitude
+depth
+```
+
+into a 3D coordinate system.
+
+For a simple globe representation:
+
+```text
+lat/lon
+   ↓
+spherical coordinates
+   ↓
+x/y/z
+   ↓
+Three.js
+```
+
+For an ocean volume:
+
+Use a local projected coordinate system around the selected region.
+
+Depth should map to the Y/Z axis depending on your chosen coordinate convention.
+
+Document the coordinate convention in code.
+
+---
+
+# 43. IMPORTANT: SCIENTIFIC DATA VS VISUALIZATION
+
+Do not send massive raw NetCDF arrays directly to the browser.
+
+Use:
+
+```text
+NetCDF
+↓
+Python/xarray
+↓
+Filter selected time/depth/variable
+↓
+Downsample if necessary
+↓
+API
+↓
+Browser
+```
+
+This is critical for performance.
+
+---
+
+# 44. PERFORMANCE
+
+Plan for large datasets.
+
+Discuss and implement where appropriate:
+
+* Lazy loading
+* Server-side filtering
+* Downsampling
+* Caching
+* Data slicing
+* Avoiding huge JSON payloads
+* WebGL rendering
+
+For the MVP, only implement the techniques that are necessary.
+
+---
+
+# 45. OPeNDAP
+
+The production problem statement mentions a REST/OPeNDAP-compatible backend.
+
+Do NOT spend most of the hackathon implementing a complete OPeNDAP server.
+
+Instead:
+
+Create a backend abstraction:
+
+```text
+OceanDataProvider
+│
+├── LocalNetCDFProvider
+├── DemoProvider
+└── OPeNDAPProvider
+```
+
+Implement LocalNetCDFProvider and DemoProvider.
+
+Leave OPeNDAPProvider as an integration-ready module if implementing it would significantly increase complexity.
+
+Clearly document this.
+
+---
+
+# 46. OGC STANDARDS
+
+The problem statement mentions:
+
+* OGC WMS
+* OGC WCS
+* CF Conventions
+
+Do not build a complete OGC infrastructure for the hackathon.
+
+Instead:
+
+* Preserve CF-style variable/coordinate metadata where possible.
+* Document how WMS/WCS can be integrated later.
+* Design the API so external geospatial services can be added.
+
+---
+
+# 47. ANALYTICS PAGE
+
+Create useful scientific analytics.
+
+Include:
+
+### Temperature statistics
+
+* Min
+* Max
+* Mean
+* Median
+
+### Salinity statistics
+
+* Min
+* Max
+* Mean
+
+### Current speed
+
+* Minimum
+* Maximum
+* Average
+
+### Observation count
+
+### Model-observation error
+
+---
+
+# 48. CHARTS
+
+Create:
+
+### Temperature vs Depth
+
+### Salinity vs Depth
+
+### Temperature vs Time
+
+### Model vs Observation
+
+### Current Speed vs Time
+
+### Observation Locations
+
+### Error distribution
+
+Use appropriate scientific charts.
+
+---
+
+# 49. DISASTER MANAGEMENT CONNECTION
+
+The application is under:
+
+# Theme: Disaster Management
+
+Make this visible.
+
+Add an optional:
+
+# Ocean Hazard / Decision Support
+
+panel.
+
+Do not claim to provide operational forecasts.
+
+Instead demonstrate how visualization can support:
+
+* Rapid ocean-state assessment
+* Hazard assessment
+* Search-and-rescue support
+* Marine situational awareness
+* Fishery advisory context
+* Coastal/environmental monitoring
+
+Example:
+
+```text
+CURRENT OCEAN CONDITIONS
+
+Temperature:
+29.1°C
+
+Current Speed:
+1.24 m/s
+
+Salinity:
+35.2 PSU
+
+Observation Coverage:
+Good
+
+Model/Observation Agreement:
+87%
+```
+
+---
+
+# 50. PUBLIC OUTREACH MODE
+
+The problem statement specifically mentions public outreach and science communication.
+
+Implement an optional:
+
+# Explore Mode
+
+This mode should simplify the interface.
+
+Instead of showing technical controls everywhere, display:
+
+```text
+What is happening in the ocean?
+
+Temperature
+Currents
+Salinity
+Chlorophyll
+```
+
+Include short explanations.
+
+Example:
+
+> Ocean currents are large-scale movements of seawater that transport heat, nutrients, and other properties.
+
+This demonstrates that the platform is useful beyond expert oceanographers.
+
+---
+
+# 51. ABOUT PAGE
+
+Create:
+
+# About IBVAP
+
+Explain:
+
+```text
+IBVAP is a browser-based 3D ocean-data visualization platform designed to integrate numerical ocean model outputs with in-situ observations.
+```
+
+Explain:
+
+* Problem
+* Solution
+* Technology
+* Benefits
+* Future scope
+
+Mention:
+
+**INCOIS / Ministry of Earth Sciences context**
+
+Do not claim official affiliation.
+
+---
+
+# 52. EXTENSIBILITY
+
+Design the code so future sources can be added:
+
+```text
+Sensors
+├── Argo
+├── Glider
+├── CTD
+├── BGC
+├── Mooring
+├── HF Radar
+└── ADCP
+```
+
+and variables:
+
+```text
+Variables
+├── Temperature
+├── Salinity
+├── Current
+├── Chlorophyll
+├── Oxygen
+└── Future ML products
+```
+
+Use interfaces/configuration rather than hardcoding everything into one component.
+
+---
+
+# 53. DEMO DATA GENERATION
+
+Create a Python script:
+
+```text
+scripts/generate_demo_data.py
+```
+
+It should generate realistic synthetic:
+
+### Model dataset
+
+NetCDF
+
+### Observation dataset
+
+CSV
+
+### Argo profiles
+
+### Glider track/profile
+
+The synthetic model should contain smooth spatial/temporal variation rather than completely random noise.
+
+For example:
+
+Temperature can vary with:
+
+* latitude
+* longitude
+* depth
+* time
+
+Salinity similarly.
+
+Currents should have coherent direction patterns.
+
+---
+
+# 54. SAMPLE DATA STRUCTURE
+
+Create something similar to:
+
+```text
+data/
+├── demo/
+│   ├── ocean_model.nc
+│   ├── argo_profiles.csv
+│   ├── glider_profiles.csv
+│   └── stations.csv
+│
+└── uploaded/
+```
+
+Do not commit huge files.
+
+Keep demo files small enough to run in Replit.
+
+---
+
+# 55. DATABASE
+
+Use SQLite.
+
+Tables:
+
+```text
+datasets
+observations
+platforms
+variables
+events
+users
+settings
+```
+
+However, do not store huge model arrays in SQLite.
+
+Store:
+
+* Metadata
+* Dataset references
+* Observation metadata
+* User configuration
+
+Keep scientific arrays in NetCDF/files.
+
+---
+
+# 56. FILE UPLOAD
+
+Create an upload interface:
+
+```text
+┌─────────────────────────────┐
+│ Drop NetCDF/CSV/TXT here    │
+│                             │
+│       Browse Files          │
+└─────────────────────────────┘
+```
+
+After upload:
+
+```text
+Filename
+Format
+Size
+Dimensions
+Variables
+Time Range
+Depth Range
+Status
+```
+
+---
+
+# 57. VALIDATION
+
+When uploading NetCDF:
+
+Check:
+
+* File validity
+* Dimensions
+* Coordinates
+* Variables
+* Missing values
+* Units
+
+When uploading CSV:
+
+Check:
+
+* Required columns
+* Data types
+* Latitude range
+* Longitude range
+* Depth
+* Timestamp
+
+Show useful validation errors.
+
+---
+
+# 58. DATA QUALITY
+
+Display a small:
+
+# Data Quality
+
+panel.
+
+Example:
+
+```text
+Missing values: 1.2%
+
+Spatial coverage: 94%
+
+Temporal coverage: 100%
+
+Observation count: 38
+
+Quality:
+GOOD
+```
+
+This helps make the prototype look like a serious scientific platform.
+
+---
+
+# 59. REAL-TIME / FUTURE DATA
+
+The architecture should be ready for future live observation ingestion.
+
+Create:
+
+```text
+ObservationProvider
+```
+
+with:
+
+```text
+DemoObservationProvider
+FileObservationProvider
+FutureLiveObservationProvider
+```
+
+Do not require a real live API for the MVP.
+
+---
+
+# 60. SECURITY
+
+Implement reasonable prototype-level security:
+
+* Input validation
+* File validation
+* API validation
+* CORS
+* Environment variables
+* No secrets committed
+* Safe file handling
+
+Do not build enterprise authentication unless it is simple.
+
+---
+
+# 61. REPLIT COMPATIBILITY
+
+The project MUST work on Replit.
+
+Before finishing:
+
+Check:
+
+* Node version
+* Python version
+* Dependency installation
+* Frontend build
+* Backend startup
+* API connectivity
+* Static file serving
+
+Create a clear startup configuration.
+
+If possible, allow:
+
+```text
+npm run dev
+```
+
+or a single Replit Run command.
+
+---
+
+# 62. DOCKER
+
+Docker is optional.
+
+Do NOT make Docker mandatory for running on Replit.
+
+If useful, provide:
+
+```text
+Dockerfile
+docker-compose.yml
+```
+
+but the project must run directly.
+
+---
+
+# 63. ERROR HANDLING
+
+Handle:
+
+* Invalid NetCDF
+* Invalid CSV
+* Missing variable
+* Missing coordinate
+* Backend failure
+* Empty dataset
+* Large file
+* Invalid depth
+* Invalid timestamp
+* Missing observation
+
+Never expose raw stack traces to users.
+
+---
+
+# 64. LOADING STATES
+
+Scientific datasets can take time to process.
+
+Create:
+
+```text
+Loading dataset...
+Processing NetCDF...
+Extracting variables...
+Preparing visualization...
+```
+
+Use progress indicators where appropriate.
+
+---
+
+# 65. FINAL APPLICATION PAGES
+
+The final application should contain at least:
+
+```text
+/
+Dashboard
+
+/explorer
+3D Ocean Explorer
+
+/observations
+Observation Explorer
+
+/comparison
+Model vs Observation
+
+/analytics
+Analytics
+
+/datasets
+Dataset Manager
+
+/ingestion
+Data Ingestion
+
+/map
+Ocean Map
+
+/about
+About
+```
+
+---
+
+# 66. PROJECT STRUCTURE
+
+Use a clean structure:
+
+```text
+ibvap/
+│
+├── frontend/
+│
+├── backend/
+│
+├── data/
+│   ├── demo/
+│   └── uploaded/
+│
+├── scripts/
+│
+├── docs/
+│
+├── models/
+│
+├── README.md
+├── .env.example
+└── replit configuration
+```
+
+---
+
+# 67. DEVELOPMENT PRIORITY
+
+Build features in this exact order.
+
+## PRIORITY 1
+
+Application shell
+
+## PRIORITY 2
+
+Dashboard
+
+## PRIORITY 3
+
+Demo NetCDF data
+
+## PRIORITY 4
+
+Python/xarray processing
+
+## PRIORITY 5
+
+FastAPI
+
+## PRIORITY 6
+
+3D ocean viewer
+
+## PRIORITY 7
+
+Temperature visualization
+
+## PRIORITY 8
+
+Depth slider
+
+## PRIORITY 9
+
+Time slider
+
+## PRIORITY 10
+
+Salinity
+
+## PRIORITY 11
+
+Currents
+
+## PRIORITY 12
+
+Argo markers
+
+## PRIORITY 13
+
+Glider markers
+
+## PRIORITY 14
+
+Profile charts
+
+## PRIORITY 15
+
+Model-vs-observation comparison
+
+## PRIORITY 16
+
+Map
+
+## PRIORITY 17
+
+Dataset ingestion
+
+## PRIORITY 18
+
+Analytics
+
+## PRIORITY 19
+
+Colorbar customization
+
+## PRIORITY 20
+
+Isosurface/depth-volume approximation
+
+## PRIORITY 21
+
+Public outreach mode
+
+## PRIORITY 22
+
+Disaster-management decision-support panel
+
+## PRIORITY 23
+
+UI polish
+
+## PRIORITY 24
+
+Testing
+
+If time runs out, stop at the highest stable priority.
+
+Do NOT break working features to add advanced features.
+
+---
+
+# 68. MVP DEFINITION
+
+The MVP MUST demonstrate this complete flow:
+
+```text
+Open Website
+      ↓
+Dashboard
+      ↓
+Open 3D Ocean Explorer
+      ↓
+Indian Ocean appears
+      ↓
+Temperature field appears
+      ↓
+Change depth
+      ↓
+Temperature visualization changes
+      ↓
+Change time
+      ↓
+Visualization changes
+      ↓
+Enable currents
+      ↓
+Current vectors appear
+      ↓
+Enable observations
+      ↓
+Argo/Glider markers appear
+      ↓
+Click Argo
+      ↓
+Profile chart opens
+      ↓
+Compare Model vs Observation
+      ↓
+Difference is calculated
+      ↓
+Open analytics
+      ↓
+View statistics/charts
+```
+
+If this flow works, the prototype is successful.
+
+---
+
+# 69. 24–48 HOUR HACKATHON PRIORITY
+
+## MUST BUILD
+
+* Dashboard
+* 3D ocean visualization
+* Temperature
+* Depth
+* Time
+* Argo/Glider markers
+* Observation profile
+* Model vs observation
+* Current visualization
+* Map
+* Demo NetCDF data
+* FastAPI backend
+* React frontend
+
+## SHOULD BUILD
+
+* Salinity
+* Chlorophyll
+* Data upload
+* Colorbar editor
+* Analytics
+* Public outreach mode
+
+## DON'T BUILD FIRST
+
+* Full OPeNDAP
+* Full OGC WMS/WCS
+* Kubernetes
+* Complex cloud architecture
+* Advanced ML
+* Huge datasets
+* Perfect volumetric rendering
+* Enterprise authentication
+* Production-scale distributed storage
+
+---
+
+# 70. DEMO STORY FOR SIH JUDGES
+
+Create:
+
+```text
+docs/DEMO_SCRIPT.md
+```
+
+The demo should follow this story:
+
+### 1. Problem
+
+Explain that ocean model outputs and observations are difficult to explore together.
+
+### 2. Dashboard
+
+Show the integrated platform.
+
+### 3. 3D Ocean
+
+Open the Indian Ocean visualization.
+
+### 4. Temperature
+
+Show temperature distribution.
+
+### 5. Depth
+
+Move from surface to 100m/500m.
+
+### 6. Time
+
+Play through several time steps.
+
+### 7. Currents
+
+Enable current vectors.
+
+### 8. Observations
+
+Enable Argo and Glider markers.
+
+### 9. Profile
+
+Click an Argo float.
+
+Show temperature/salinity vs depth.
+
+### 10. Comparison
+
+Compare observed and model values.
+
+### 11. Analytics
+
+Show error metrics.
+
+### 12. Data ingestion
+
+Upload a sample dataset.
+
+### 13. Public outreach
+
+Show simplified Explore Mode.
+
+### 14. Future
+
+Explain that the same architecture can connect to real INCOIS datasets and additional sensors.
+
+---
+
+# 71. JUDGE VALUE
+
+The UI and demo should clearly communicate:
+
+## Integration
+
+Model + observations in one place.
+
+## 3D
+
+Depth-resolved ocean visualization.
+
+## Interactivity
+
+Time/depth/variable controls.
+
+## Scientific usefulness
+
+Model vs observation comparison.
+
+## Extensibility
+
+Argo, Glider, CTD, BGC, ADCP, etc.
+
+## Disaster management
+
+Rapid ocean-state understanding.
+
+## Public outreach
+
+Complex ocean science made accessible.
+
+## Scalability
+
+Architecture designed to handle larger datasets.
+
+---
+
+# 72. README
+
+Generate a comprehensive README containing:
+
+## Project title
+
+IBVAP — Interactive 3D Ocean Visualization Platform
+
+## Problem statement
+
+PS 26067
+
+## Problem
+
+## Solution
+
+## Features
+
+## Architecture
+
+## Technology stack
+
+## Folder structure
+
+## Demo data
+
+## NetCDF processing
+
+## API documentation
+
+## Running on Replit
+
+## Running locally
+
+## Dataset format
+
+## Known limitations
+
+## Future improvements
+
+## SIH demo instructions
+
+---
+
+# 73. ARCHITECTURE DOCUMENT
+
+Create:
+
+```text
+docs/ARCHITECTURE.md
+```
+
+Explain:
+
+```text
+Data Sources
+     ↓
+Data Ingestion
+     ↓
+Scientific Data Processing
+     ↓
+Data Provider
+     ↓
+FastAPI
+     ↓
+React
+     ↓
+Three.js
+     ↓
+User
+```
+
+Also explain the observation pipeline:
+
+```text
+Argo / Glider
+      ↓
+Parser
+      ↓
+Observation Store
+      ↓
+API
+      ↓
+3D Marker
+      ↓
+Profile Chart
+```
+
+And comparison:
+
+```text
+Observation
+     +
+Model
+     ↓
+Spatial/Temporal Matching
+     ↓
+Metrics
+     ↓
+Comparison Visualization
+```
+
+---
+
+# 74. TESTING
+
+Test all of the following.
+
+## Backend
+
+* Server starts
+* APIs work
+* Dataset loading works
+* NetCDF parser works
+* CSV parser works
+* Observation API works
+* Comparison API works
+
+## Frontend
+
+* Dashboard
+* Explorer
+* Controls
+* 3D scene
+* Markers
+* Charts
+* Map
+* Upload
+* Navigation
+
+## Integration
+
+Test:
+
+```text
+Frontend
+↓
+API
+↓
+xarray
+↓
+Dataset
+↓
+API
+↓
+Frontend
+```
+
+Fix all major errors.
+
+---
+
+# 75. SCIENTIFIC CORRECTNESS
+
+Do not invent scientific claims.
+
+Clearly distinguish:
+
+```text
+REAL DATA
+```
+
+from:
+
+```text
+DEMO / SYNTHETIC DATA
+```
+
+If synthetic data is being used, display:
+
+> Demo data for visualization and prototype demonstration.
+
+Do not claim the synthetic results are real INCOIS forecasts.
+
+---
+
+# 76. DO NOT REQUIRE BLENDER
+
+Do not use Blender.
+
+The application is browser-based.
+
+Use:
+
+```text
+React
++
+Three.js
++
+WebGL
+```
+
+for the 3D environment.
+
+---
+
+# 77. DO NOT REQUIRE GPU
+
+The MVP should work on an ordinary laptop as much as possible.
+
+Use small datasets and efficient rendering.
+
+If GPU acceleration is available through WebGL, use it.
+
+Do not require a dedicated CUDA GPU.
+
+---
+
+# 78. FUTURE PRODUCTION ARCHITECTURE
+
+Document but do NOT necessarily implement:
+
+```text
+INCOIS Data Sources
+        ↓
+OPeNDAP / Object Storage
+        ↓
+Zarr / NetCDF
+        ↓
+Scalable Data Service
+        ↓
+FastAPI / OGC Services
+        ↓
+WebGL Client
+```
+
+Potential future technologies:
+
+* Zarr
+* Object storage
+* OPeNDAP
+* OGC WMS/WCS
+* PostGIS
+* Distributed processing
+
+Clearly label these as:
+
+# FUTURE / PRODUCTION
+
+not MVP.
+
+---
+
+# 79. IMPORTANT DESIGN PRINCIPLE
+
+Do not simply create a 3D globe with pretty colors.
+
+The application must demonstrate **scientific analysis**.
+
+The three most important capabilities are:
+
+### 1. Explore
+
+What is the ocean state?
+
+### 2. Observe
+
+What do real instruments report?
+
+### 3. Compare
+
+Does the model agree with observations?
+
+This should be the central story of the application.
+
+---
+
+# 80. FINAL ACCEPTANCE CRITERIA
+
+The prototype is complete when a judge can:
+
+1. Open the application.
+2. See the Indian Ocean.
+3. Select temperature.
+4. Change depth.
+5. Change time.
+6. View 3D ocean data.
+7. Toggle currents.
+8. See Argo floats.
+9. See Glider tracks.
+10. Click an observation.
+11. View a temperature/salinity profile.
+12. Compare model and observation.
+13. See calculated difference/error.
+14. Open the map.
+15. Open analytics.
+16. Upload a sample NetCDF/CSV.
+17. See dataset metadata.
+18. Understand how future INCOIS data can be connected.
+19. Understand how the platform supports disaster management.
+20. Understand the public-outreach potential.
+
+---
+
+# 81. START BUILDING NOW
+
+Do NOT respond with a theoretical architecture only.
+
+First inspect the existing Replit environment.
+
+Then:
+
+1. Create the project structure.
+2. Install required dependencies.
+3. Generate demo scientific data.
+4. Implement Python/xarray processing.
+5. Implement FastAPI.
+6. Implement React frontend.
+7. Implement the 3D ocean explorer.
+8. Implement controls.
+9. Implement observation overlays.
+10. Implement model-vs-observation comparison.
+11. Implement analytics.
+12. Implement map.
+13. Implement data ingestion.
+14. Test everything.
+15. Fix errors.
+16. Polish the interface.
+17. Create README.
+18. Create demo script.
+
+After implementation, provide a concise summary of:
+
+* What was built
+* What is actually functional
+* What is simulated
+* How to run it
+* Where important files are
+* Known limitations
+* How to demonstrate it to SIH judges
+
+## FINAL PRINCIPLE
+
+**Do not try to build the entire production INCOIS system.**
+
+Build a **small, polished, convincing, technically credible prototype** that proves the core concept:
+
+```text
+OCEAN MODEL
+     +
+ARGO / GLIDER OBSERVATIONS
+     ↓
+DATA PROCESSING
+     ↓
+FASTAPI
+     ↓
+INTERACTIVE 3D WEB VISUALIZATION
+     ↓
+MODEL vs OBSERVATION ANALYSIS
+     ↓
+SCIENTIFIC / DISASTER-MANAGEMENT INSIGHT
+```
+
+The prototype should make a judge immediately understand:
+
+> **"Instead of using separate scientific tools to inspect ocean model data and instrument observations, this platform brings both into one browser-based interactive 3D environment."**
+
+Build that product.

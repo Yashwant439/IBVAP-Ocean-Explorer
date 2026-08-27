@@ -3,20 +3,22 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: IBVAP Indian Ocean model and observation API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
-    description: Health operations
+  - name: ocean
+  - name: observations
+  - name: datasets
+  - name: analytics
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +26,461 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /datasets:
+    get:
+      operationId: listDatasets
+      tags: [datasets]
+      summary: List available datasets
+      responses:
+        "200":
+          description: Dataset catalog
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Dataset"
+  /datasets/{id}:
+    get:
+      operationId: getDataset
+      tags: [datasets]
+      summary: Get dataset metadata
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Dataset metadata
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatasetDetail"
+        "404":
+          description: Dataset not found
+  /datasets/upload:
+    post:
+      operationId: uploadDataset
+      tags: [datasets]
+      summary: Inspect and register an uploaded CSV, TXT, or NetCDF file
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadDatasetInput"
+      responses:
+        "201":
+          description: Uploaded dataset metadata
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DatasetDetail"
+        "400":
+          description: Invalid upload
+  /variables:
+    get:
+      operationId: listVariables
+      tags: [ocean]
+      summary: List model variables
+      responses:
+        "200":
+          description: Variable catalog
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Variable"
+  /times:
+    get:
+      operationId: listTimes
+      tags: [ocean]
+      summary: List model time steps
+      responses:
+        "200":
+          description: Available UTC time steps
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /depths:
+    get:
+      operationId: listDepths
+      tags: [ocean]
+      summary: List model depth levels
+      responses:
+        "200":
+          description: Available depth levels in metres
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: number
+  /ocean/slice:
+    get:
+      operationId: getOceanSlice
+      tags: [ocean]
+      summary: Get a downsampled horizontal ocean field
+      parameters:
+        - $ref: "#/components/parameters/VariableQuery"
+        - $ref: "#/components/parameters/DepthQuery"
+        - $ref: "#/components/parameters/TimeQuery"
+      responses:
+        "200":
+          description: Ocean slice
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OceanSlice"
+  /ocean/current:
+    get:
+      operationId: getCurrentLayer
+      tags: [ocean]
+      summary: Get current vectors for a depth and time
+      parameters:
+        - $ref: "#/components/parameters/DepthQuery"
+        - $ref: "#/components/parameters/TimeQuery"
+      responses:
+        "200":
+          description: Current vectors
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentLayer"
+  /observations:
+    get:
+      operationId: listObservations
+      tags: [observations]
+      summary: List Argo, glider, CTD, and BGC observations
+      parameters:
+        - name: platform_type
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Observation locations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Observation"
+  /observations/{id}:
+    get:
+      operationId: getObservation
+      tags: [observations]
+      summary: Get observation metadata
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Observation metadata
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Observation"
+        "404":
+          description: Observation not found
+  /observations/{id}/profile:
+    get:
+      operationId: getObservationProfile
+      tags: [observations]
+      summary: Get a vertical observation profile
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Profile data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+  /comparison:
+    get:
+      operationId: getComparison
+      tags: [analytics]
+      summary: Compare a profile against the nearest model profile
+      parameters:
+        - name: observation_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: variable
+          in: query
+          schema:
+            type: string
+            default: temperature
+      responses:
+        "200":
+          description: Comparison data and metrics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comparison"
+  /statistics:
+    get:
+      operationId: getStatistics
+      tags: [analytics]
+      summary: Get model and observation summary statistics
+      parameters:
+        - $ref: "#/components/parameters/DepthQuery"
+        - $ref: "#/components/parameters/TimeQuery"
+      responses:
+        "200":
+          description: Summary statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Statistics"
+  /map:
+    get:
+      operationId: getMapData
+      tags: [analytics]
+      summary: Get model domain and observation map data
+      responses:
+        "200":
+          description: Map layers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MapData"
 components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    VariableQuery:
+      name: variable
+      in: query
+      schema:
+        type: string
+        default: temperature
+    DepthQuery:
+      name: depth
+      in: query
+      schema:
+        type: number
+        default: 50
+    TimeQuery:
+      name: time
+      in: query
+      schema:
+        type: string
+        default: "2026-01-05"
   schemas:
     HealthStatus:
       type: object
       properties:
         status:
           type: string
-      required:
-        - status
-
+      required: [status]
+    Dataset:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        type: { type: string }
+        source: { type: string }
+        status: { type: string }
+        variables:
+          type: array
+          items: { type: string }
+        time_range:
+          type: array
+          items: { type: string }
+        depth_range:
+          type: array
+          items: { type: number }
+        spatial_range:
+          type: array
+          items: { type: number }
+        grid:
+          type: string
+        updated_at: { type: string }
+      required: [id, name, type, source, status, variables, time_range, depth_range, spatial_range, grid, updated_at]
+    DatasetDetail:
+      allOf:
+        - $ref: "#/components/schemas/Dataset"
+        - type: object
+          properties:
+            metadata:
+              type: object
+              additionalProperties: { type: string }
+            validation:
+              type: object
+              additionalProperties: { type: string }
+          required: [metadata, validation]
+    UploadDatasetInput:
+      type: object
+      properties:
+        filename: { type: string, minLength: 1 }
+        format: { type: string }
+        size_bytes: { type: number, minimum: 0 }
+        columns:
+          type: array
+          items: { type: string }
+      required: [filename, format, size_bytes]
+    Variable:
+      type: object
+      properties:
+        id: { type: string }
+        label: { type: string }
+        unit: { type: string }
+        description: { type: string }
+        palette: { type: string }
+        min: { type: number }
+        max: { type: number }
+      required: [id, label, unit, description, palette, min, max]
+    OceanSlice:
+      type: object
+      properties:
+        variable: { type: string }
+        unit: { type: string }
+        depth: { type: number }
+        time: { type: string }
+        min: { type: number }
+        max: { type: number }
+        mean: { type: number }
+        latitude:
+          type: array
+          items: { type: number }
+        longitude:
+          type: array
+          items: { type: number }
+        values:
+          type: array
+          items:
+            type: array
+            items: { type: number }
+      required: [variable, unit, depth, time, min, max, mean, latitude, longitude, values]
+    CurrentLayer:
+      type: object
+      properties:
+        depth: { type: number }
+        time: { type: string }
+        points:
+          type: array
+          items:
+            $ref: "#/components/schemas/CurrentPoint"
+      required: [depth, time, points]
+    CurrentPoint:
+      type: object
+      properties:
+        latitude: { type: number }
+        longitude: { type: number }
+        u: { type: number }
+        v: { type: number }
+        speed: { type: number }
+      required: [latitude, longitude, u, v, speed]
+    Observation:
+      type: object
+      properties:
+        id: { type: string }
+        platform_type: { type: string }
+        platform_name: { type: string }
+        latitude: { type: number }
+        longitude: { type: number }
+        depth: { type: number }
+        timestamp: { type: string }
+        status: { type: string }
+        mission: { type: string }
+        coverage: { type: string }
+      required: [id, platform_type, platform_name, latitude, longitude, depth, timestamp, status, mission, coverage]
+    Profile:
+      type: object
+      properties:
+        observation_id: { type: string }
+        platform_name: { type: string }
+        variable: { type: string }
+        unit: { type: string }
+        points:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProfilePoint"
+      required: [observation_id, platform_name, variable, unit, points]
+    ProfilePoint:
+      type: object
+      properties:
+        depth: { type: number }
+        value: { type: number }
+        model: { type: number }
+      required: [depth, value, model]
+    Comparison:
+      type: object
+      properties:
+        observation_id: { type: string }
+        variable: { type: string }
+        unit: { type: string }
+        model_value: { type: number }
+        observation_value: { type: number }
+        difference: { type: number }
+        absolute_error: { type: number }
+        mae: { type: number }
+        bias: { type: number }
+        agreement: { type: number }
+        points:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProfilePoint"
+      required: [observation_id, variable, unit, model_value, observation_value, difference, absolute_error, mae, bias, agreement, points]
+    Statistics:
+      type: object
+      properties:
+        temperature:
+          $ref: "#/components/schemas/MetricSet"
+        salinity:
+          $ref: "#/components/schemas/MetricSet"
+        current_speed:
+          $ref: "#/components/schemas/MetricSet"
+        observation_count: { type: number }
+        agreement: { type: number }
+        error_distribution:
+          type: array
+          items: { type: number }
+      required: [temperature, salinity, current_speed, observation_count, agreement, error_distribution]
+    MetricSet:
+      type: object
+      properties:
+        min: { type: number }
+        max: { type: number }
+        mean: { type: number }
+        median: { type: number }
+      required: [min, max, mean, median]
+    MapData:
+      type: object
+      properties:
+        domain:
+          type: array
+          items:
+            type: object
+            properties:
+              latitude: { type: number }
+              longitude: { type: number }
+            required: [latitude, longitude]
+        observations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Observation"
+        tracks:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              points:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    latitude: { type: number }
+                    longitude: { type: number }
+                  required: [latitude, longitude]
+            required: [id, points]
+      required: [domain, observations, tracks]
